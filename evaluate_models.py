@@ -55,7 +55,6 @@ class TFLiteModel:
     def give_predictions(self,X_test):
         predictions = []
         X_test = X_test.astype(np.float32)
-        print(X_test.shape[0])
         for i in range(X_test.shape[0]):
             self.interpreter.set_tensor(self.input_details[0]["index"], X_test[i:i+1, :, :])
             self.interpreter.invoke()
@@ -80,7 +79,7 @@ class TFLiteModel:
     def plot_confusion_matrix(self,y_pred_labels, y_true_labels, save_to_folder=True):
         cm = confusion_matrix(y_true_labels,y_pred_labels)
         #Normalise confusion matrix
-        cm_normalised = np.around(cm / cm.astype(np.float).sum(axis=1) , decimals=2)
+        cm_normalised = np.around(cm / cm.astype(np.float32).sum(axis=1) , decimals=2)
 
         fig, ax= plt.subplots(figsize=(25, 25))
             # sns.set(font_scale=1.2)
@@ -130,7 +129,6 @@ class TFLiteModel:
         base_df = self.group_lying_together(base_df)
         base_df = self.group_sitting_and_standing_together(base_df)
           
-        print("SUCCESS")
 
         #Group given recordings into window sizes
         sliding_windows = self.group_into_sliding_windows(base_df)
@@ -223,8 +221,8 @@ class TFLiteModel:
 
   
 
-if __name__ == "__main__":
-    #Prepare data and model 
+if __name__ == "__main__":    
+    #Prepare (Respeck) data and model. 
     key = ["--model_path=", "--test_data_path="]
     model_path = str(sys.argv[1][len(key[0]):])
     test_data_path = str(sys.argv[2][len(key[1]):])
